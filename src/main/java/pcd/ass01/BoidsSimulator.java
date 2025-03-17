@@ -1,6 +1,9 @@
 package pcd.ass01;
 
+import pcd.ass01.workers.VelocityUpdaterMaster;
+
 import java.util.Optional;
+import java.util.concurrent.Semaphore;
 
 public class BoidsSimulator {
 
@@ -9,10 +12,14 @@ public class BoidsSimulator {
     
     private static final int FRAMERATE = 25;
     private int framerate;
+
+    private final VelocityUpdaterMaster velocityUpdaterMaster;
     
     public BoidsSimulator(BoidsModel model) {
         this.model = model;
         view = Optional.empty();
+
+        velocityUpdaterMaster = new VelocityUpdaterMaster();
     }
 
     public void attachView(BoidsView view) {
@@ -28,15 +35,14 @@ public class BoidsSimulator {
                 boid.update(model);
             }
             */
-    		
-    		/* 
-    		 * Improved correctness: first update velocities...
-    		 */
-    		for (Boid boid : boids) {
-                boid.updateVelocity(model);
-            }
 
-    		/* 
+
+            velocityUpdaterMaster.setAllBoids(boids);
+            velocityUpdaterMaster.setModel(model);
+
+            velocityUpdaterMaster.updateVelocities();
+
+            /*
     		 * ..then update positions
     		 */
     		for (Boid boid : boids) {
@@ -49,7 +55,9 @@ public class BoidsSimulator {
             	var t1 = System.currentTimeMillis();
                 var dtElapsed = t1 - t0;
                 var framratePeriod = 1000/FRAMERATE;
-                
+
+                System.out.println("dtElapsed: " + dtElapsed);
+
                 if (dtElapsed < framratePeriod) {		
                 	try {
                 		Thread.sleep(framratePeriod - dtElapsed);
