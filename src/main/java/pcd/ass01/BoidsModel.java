@@ -42,7 +42,7 @@ public class BoidsModel {
         for (int i = 0; i < number; i++) {
             P2d pos = new P2d(-width/2 + Math.random() * width, -height/2 + Math.random() * height);
             V2d vel = new V2d(Math.random() * maxSpeed/2 - maxSpeed/4, Math.random() * maxSpeed/2 - maxSpeed/4);
-            boids.add(new SerialBoidImpl(pos, vel));
+            boids.add(new Boid(pos, vel));
         }
     }
 
