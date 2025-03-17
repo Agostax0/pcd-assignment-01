@@ -71,15 +71,15 @@ public class BoidsView implements ChangeListener {
 	}
 
 	private JSlider makeBoidSlider(){
-		var slider = new JSlider(JSlider.HORIZONTAL, 0, 10, 1);
+		var slider = new JSlider(JSlider.HORIZONTAL, 0, 10, 0);
 		slider.setMajorTickSpacing(10);
 		slider.setMinorTickSpacing(1);
 		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
 		Hashtable labelTable = new Hashtable<>();
 		labelTable.put( 0, new JLabel("1500") );
-		labelTable.put( 10, new JLabel("2250") );
-		labelTable.put( 20, new JLabel("3000") );
+		labelTable.put( 5, new JLabel(String.valueOf(6*1500)));
+		labelTable.put( 10, new JLabel(String.valueOf(11*1500)));
 		slider.setLabelTable( labelTable );
 		slider.setPaintLabels(true);
 		slider.addChangeListener(this);
@@ -105,7 +105,6 @@ public class BoidsView implements ChangeListener {
 		}
 		else{
 			var val = boidSlider.getValue();
-			System.out.println(val * 1500);
 			model.setBoidsNumber(1500 + val * 1500);
 		}
 
