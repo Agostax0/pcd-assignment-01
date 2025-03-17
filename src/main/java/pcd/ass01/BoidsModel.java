@@ -5,7 +5,7 @@ import java.util.List;
 
 public class BoidsModel {
     
-    private final List<Boid> boids;
+    private List<Boid> boids;
     private double separationWeight; 
     private double alignmentWeight; 
     private double cohesionWeight; 
@@ -33,14 +33,20 @@ public class BoidsModel {
         this.perceptionRadius = perceptionRadius;
         this.avoidRadius = avoidRadius;
         
-    	boids = new ArrayList<>();
-        for (int i = 0; i < nboids; i++) {
-        	P2d pos = new P2d(-width/2 + Math.random() * width, -height/2 + Math.random() * height);
-        	V2d vel = new V2d(Math.random() * maxSpeed/2 - maxSpeed/4, Math.random() * maxSpeed/2 - maxSpeed/4);
-        	boids.add(new SerialBoidImpl(pos, vel));
-        }
+        initBoids(nboids);
 
     }
+
+    private void initBoids(int number){
+        boids = new ArrayList<>();
+        for (int i = 0; i < number; i++) {
+            P2d pos = new P2d(-width/2 + Math.random() * width, -height/2 + Math.random() * height);
+            V2d vel = new V2d(Math.random() * maxSpeed/2 - maxSpeed/4, Math.random() * maxSpeed/2 - maxSpeed/4);
+            boids.add(new SerialBoidImpl(pos, vel));
+        }
+    }
+
+    public synchronized void setBoidsNumber(int value){initBoids(value);}
     
     public synchronized List<Boid> getBoids(){
     	return boids;

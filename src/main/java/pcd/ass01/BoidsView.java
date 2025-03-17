@@ -11,7 +11,7 @@ public class BoidsView implements ChangeListener {
 
 	private JFrame frame;
 	private BoidsPanel boidsPanel;
-	private JSlider cohesionSlider, separationSlider, alignmentSlider;
+	private JSlider cohesionSlider, separationSlider, alignmentSlider, boidSlider;
 	private BoidsModel model;
 	private int width, height;
 	
@@ -36,6 +36,7 @@ public class BoidsView implements ChangeListener {
         cohesionSlider = makeSlider();
         separationSlider = makeSlider();
         alignmentSlider = makeSlider();
+		boidSlider = makeBoidSlider();
         
         slidersPanel.add(new JLabel("Separation"));
         slidersPanel.add(separationSlider);
@@ -43,6 +44,8 @@ public class BoidsView implements ChangeListener {
         slidersPanel.add(alignmentSlider);
         slidersPanel.add(new JLabel("Cohesion"));
         slidersPanel.add(cohesionSlider);
+		slidersPanel.add(new JLabel("Boids"));
+		slidersPanel.add(boidSlider);
 		        
 		cp.add(BorderLayout.SOUTH, slidersPanel);
 
@@ -66,6 +69,22 @@ public class BoidsView implements ChangeListener {
         slider.addChangeListener(this);
 		return slider;
 	}
+
+	private JSlider makeBoidSlider(){
+		var slider = new JSlider(JSlider.HORIZONTAL, 0, 10, 1);
+		slider.setMajorTickSpacing(10);
+		slider.setMinorTickSpacing(1);
+		slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		Hashtable labelTable = new Hashtable<>();
+		labelTable.put( 0, new JLabel("1500") );
+		labelTable.put( 10, new JLabel("2250") );
+		labelTable.put( 20, new JLabel("3000") );
+		slider.setLabelTable( labelTable );
+		slider.setPaintLabels(true);
+		slider.addChangeListener(this);
+		return slider;
+	}
 	
 	public void update(int frameRate) {
 		boidsPanel.setFrameRate(frameRate);
@@ -80,10 +99,16 @@ public class BoidsView implements ChangeListener {
 		} else if (e.getSource() == cohesionSlider) {
 			var val = cohesionSlider.getValue();
 			model.setCohesionWeight(0.1*val);
-		} else {
+		} else if(e.getSource() == alignmentSlider){
 			var val = alignmentSlider.getValue();
 			model.setAlignmentWeight(0.1*val);
 		}
+		else{
+			var val = boidSlider.getValue();
+			System.out.println(val * 1500);
+			model.setBoidsNumber(1500 + val * 1500);
+		}
+
 	}
 	
 	public int getWidth() {
