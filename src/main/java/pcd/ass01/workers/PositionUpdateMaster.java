@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class VelocityUpdaterMaster{
+public class PositionUpdateMaster {
     private int availableProcessors = Runtime.getRuntime().availableProcessors();
 
     private List<Boid> allBoids;
     private BoidsModel model;
-    private List<VelocityUpdaterWorker> workers = new ArrayList<>();
+    private List<PositionUpdaterWorker> workers = new ArrayList<>();
 
     private Semaphore allUpdatersFinished = new Semaphore(availableProcessors, true);
 
-    public VelocityUpdaterMaster(){
+    public PositionUpdateMaster(){
         blockAll();
 
         for(int i = 0; i < availableProcessors; i++){
-            var worker = new VelocityUpdaterWorker(allUpdatersFinished);
+            var worker = new PositionUpdaterWorker(allUpdatersFinished);
             workers.add(worker);
             worker.start();
         }
@@ -46,7 +46,7 @@ public class VelocityUpdaterMaster{
         allUpdatersFinished.release(availableProcessors);
     }
 
-    public void updateVelocities(){
+    public void updatePositions(){
 
         int partitionSize = allBoids.size() / availableProcessors;
 
@@ -61,15 +61,16 @@ public class VelocityUpdaterMaster{
 
         blockAll();
     }
-    
-    private class VelocityUpdaterWorker extends Thread{
 
+    private class PositionUpdaterWorker extends Thread{
         private final Semaphore workDoneSemaphore;
         private List<Boid> boidPartition;
 
-        public VelocityUpdaterWorker(Semaphore workDoneSemaphore) {
+
+        public PositionUpdaterWorker(Semaphore workDoneSemaphore) {
             this.workDoneSemaphore = workDoneSemaphore;
         }
+
 
         public void setBoidPartition(List<Boid> boidPartition) {
             this.boidPartition = boidPartition;
@@ -80,8 +81,8 @@ public class VelocityUpdaterMaster{
                 try {
                     this.workDoneSemaphore.acquire();
 
-                    for (Boid boid : this.boidPartition) {
-                        boid.updateVelocity(model);
+                    for (Boid boid : boidPartition) {
+                        boid.updatePos(model);
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -91,6 +92,6 @@ public class VelocityUpdaterMaster{
                 }
             }
         }
-    }
 
+    }
 }

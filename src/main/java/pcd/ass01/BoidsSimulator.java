@@ -1,7 +1,9 @@
 package pcd.ass01;
 
+import pcd.ass01.workers.PositionUpdateMaster;
 import pcd.ass01.workers.VelocityUpdaterMaster;
 
+import javax.swing.text.Position;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
 
@@ -14,12 +16,14 @@ public class BoidsSimulator {
     private int framerate;
 
     private final VelocityUpdaterMaster velocityUpdaterMaster;
-    
+    private final PositionUpdateMaster positionUpdateMaster;
+
     public BoidsSimulator(BoidsModel model) {
         this.model = model;
         view = Optional.empty();
 
         velocityUpdaterMaster = new VelocityUpdaterMaster();
+        positionUpdateMaster = new PositionUpdateMaster();
     }
 
     public void attachView(BoidsView view) {
@@ -30,24 +34,15 @@ public class BoidsSimulator {
     	while (true) {
             var t0 = System.currentTimeMillis();
     		var boids = model.getBoids();
-    		/*
-    		for (Boid boid : boids) {
-                boid.update(model);
-            }
-            */
 
 
             velocityUpdaterMaster.setAllBoids(boids);
             velocityUpdaterMaster.setModel(model);
-
             velocityUpdaterMaster.updateVelocities();
 
-            /*
-    		 * ..then update positions
-    		 */
-    		for (Boid boid : boids) {
-                boid.updatePos(model);
-            }
+            positionUpdateMaster.setAllBoids(boids);
+            positionUpdateMaster.setModel(model);
+            positionUpdateMaster.updatePositions();
 
             
     		if (view.isPresent()) {
