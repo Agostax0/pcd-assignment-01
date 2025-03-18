@@ -48,31 +48,31 @@ public class BoidsModel {
 
     public synchronized void setBoidsNumber(int value){initBoids(value);}
     
-    public synchronized List<Boid> getBoids(){
+    public List<Boid> getBoids(){
     	return boids;
     }
     
-    public synchronized double getMinX() {
+    public double getMinX() {
     	return -width/2;
     }
 
-    public synchronized double getMaxX() {
+    public double getMaxX() {
     	return width/2;
     }
 
-    public synchronized double getMinY() {
+    public double getMinY() {
     	return -height/2;
     }
 
-    public synchronized double getMaxY() {
+    public double getMaxY() {
     	return height/2;
     }
     
-    public synchronized double getWidth() {
+    public double getWidth() {
     	return width;
     }
  
-    public synchronized double getHeight() {
+    public double getHeight() {
     	return height;
     }
 
@@ -100,7 +100,7 @@ public class BoidsModel {
     	return alignmentWeight;
     }
     
-    public synchronized double getMaxSpeed() {
+    public double getMaxSpeed() {
     	return maxSpeed;
     }
 
