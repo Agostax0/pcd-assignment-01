@@ -104,11 +104,11 @@ public class BoidsModel {
     	return maxSpeed;
     }
 
-    public synchronized double getAvoidRadius() {
+    public double getAvoidRadius() {
     	return avoidRadius;
     }
 
-    public synchronized double getPerceptionRadius() {
+    public double getPerceptionRadius() {
     	return perceptionRadius;
     }
 }
