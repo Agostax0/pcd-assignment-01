@@ -1,6 +1,7 @@
 package pcd.ass01;
 
 import pcd.ass01.workers.PositionUpdateMaster;
+import pcd.ass01.workers.UpdaterMaster;
 import pcd.ass01.workers.VelocityUpdaterMaster;
 
 import javax.swing.text.Position;
@@ -17,6 +18,7 @@ public class BoidsSimulator {
 
     private final VelocityUpdaterMaster velocityUpdaterMaster;
     private final PositionUpdateMaster positionUpdateMaster;
+    private final UpdaterMaster updaterMaster;
 
     public BoidsSimulator(BoidsModel model) {
         this.model = model;
@@ -24,6 +26,7 @@ public class BoidsSimulator {
 
         velocityUpdaterMaster = new VelocityUpdaterMaster();
         positionUpdateMaster = new PositionUpdateMaster();
+        updaterMaster = new UpdaterMaster();
     }
 
     public void attachView(BoidsView view) {
@@ -33,25 +36,18 @@ public class BoidsSimulator {
     public void runSimulation() {
     	while (true) {
             var t0 = System.currentTimeMillis();
-    		var boids = model.getBoids();
 
+            updaterMaster.update(model);
 
-            velocityUpdaterMaster.setAllBoids(boids);
-            velocityUpdaterMaster.setModel(model);
-            velocityUpdaterMaster.updateVelocities();
+            var t1 = System.currentTimeMillis();
+            var dtElapsed = t1 - t0;
 
-            positionUpdateMaster.setAllBoids(boids);
-            positionUpdateMaster.setModel(model);
-            positionUpdateMaster.updatePositions();
+            //System.out.println("dtElapsed: " + dtElapsed);
 
-            
-    		if (view.isPresent()) {
-            	view.get().update(framerate);
-            	var t1 = System.currentTimeMillis();
-                var dtElapsed = t1 - t0;
+            if (view.isPresent()) {
+                view.get().update(framerate);
                 var framratePeriod = 1000/FRAMERATE;
 
-                System.out.println("dtElapsed: " + dtElapsed);
 
                 if (dtElapsed < framratePeriod) {		
                 	try {
@@ -64,5 +60,9 @@ public class BoidsSimulator {
     		}
             
     	}
+    }
+
+    private synchronized void log(String msg){
+
     }
 }

@@ -5,6 +5,7 @@ import pcd.ass01.BoidsModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
 public class VelocityUpdaterMaster{

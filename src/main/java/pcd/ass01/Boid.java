@@ -8,6 +8,8 @@ public class Boid {
     private P2d pos;
     private V2d vel;
 
+    private List<Boid> nearbyBoids;
+
     public Boid(P2d pos, V2d vel) {
     	this.pos = pos;
     	this.vel = vel;
@@ -58,9 +60,7 @@ public class Boid {
     public void updateVelocity(BoidsModel model) {
 
     	/* change velocity vector according to separation, alignment, cohesion */
-    	
-    	List<Boid> nearbyBoids = getNearbyBoids(model);
-    	
+
     	V2d separation = calculateSeparation(nearbyBoids, model);
     	V2d alignment = calculateAlignment(nearbyBoids, model);
     	V2d cohesion = calculateCohesion(nearbyBoids, model);
@@ -77,7 +77,11 @@ public class Boid {
             vel = vel.getNormalized().mul(model.getMaxSpeed());
         }
     }    
-    
+
+    public void readNearbyBoids(BoidsModel model){
+        this.nearbyBoids = getNearbyBoids(model);
+    }
+
     public void updatePos(BoidsModel model) {
 
         /* Update position */
