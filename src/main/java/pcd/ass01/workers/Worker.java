@@ -4,23 +4,28 @@ import pcd.ass01.Boid;
 import pcd.ass01.BoidsModel;
 
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
 public class Worker extends Thread{
 
     private final int index;
-    private final Semaphore readSemaphore;
-    private final Semaphore writeSemaphore;
-    private final Semaphore updateSemaphore;
+    private final CyclicBarrier readBarrier;
+    private final CyclicBarrier writeBarrier;
+    private final CyclicBarrier updateBarrier;
+    private final Semaphore isWorkerBlockedSemaphore;
+
     private BoidsModel model;
     private final int availableProcessors = Runtime.getRuntime().availableProcessors();
     private List<Boid> myBoids;
 
-    public Worker(final int index, final Semaphore readSemaphore, final Semaphore writeSemaphore, final Semaphore updateSemaphore) {
+    public Worker(final int index, final CyclicBarrier readBarrier, final CyclicBarrier writeBarrier, final CyclicBarrier updateBarrier, final Semaphore isWorkerBlockedSemaphore) {
         this.index = index;
-        this.readSemaphore = readSemaphore;
-        this.writeSemaphore = writeSemaphore;
-        this.updateSemaphore = updateSemaphore;
+        this.readBarrier = readBarrier;
+        this.writeBarrier = writeBarrier;
+        this.updateBarrier = updateBarrier;
+        this.isWorkerBlockedSemaphore = isWorkerBlockedSemaphore;
     }
 
 
@@ -33,64 +38,73 @@ public class Worker extends Thread{
 
     public void run(){
 
-        read();
+        while(true){
 
-        write();
+            awaitStart();
 
-        update();
+            read();
 
+            write();
+
+            update();
+
+        }
     }
 
     private void update() {
         try {
-            this.updateSemaphore.acquire();
-            log("acquired update");
+            this.updateBarrier.await();
+            log("started update");
+            for(var boid: myBoids) boid.updatePos(model);
         } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (BrokenBarrierException e) {
             throw new RuntimeException(e);
         }
         finally {
-            //update
-            for(var boid: myBoids) boid.updatePos(model);
-            this.updateSemaphore.release();
             log("release update");
+
         }
     }
 
     private void write() {
         try {
-            this.writeSemaphore.acquire();
-            log("acquired write");
+            this.writeBarrier.await();
+            log("started write");
+            for (Boid boid : myBoids) {boid.updateVelocity(this.model);}
         } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (BrokenBarrierException e) {
             throw new RuntimeException(e);
         }
         finally {
-            //write
-            for(var boid: myBoids) boid.updateVelocity(model);
-            this.writeSemaphore.release();
             log("released write");
         }
     }
 
     private void read(){
         try {
-            this.readSemaphore.acquire();
+            this.readBarrier.await();
             log("acquired read");
+            for(var boid: myBoids) boid.readNearbyBoids(model);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-        finally {
-            //read
-            for(var boid: myBoids) boid.readNearbyBoids(model);
-            this.readSemaphore.release();
+        } catch (BrokenBarrierException e) {
+            throw new RuntimeException(e);
+        } finally {
             log("released read");
         }
     }
 
-    private void getNearbyBoids(){
-
+    private void awaitStart(){
+        try {
+            this.isWorkerBlockedSemaphore.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private synchronized void log(String msg){
-        System.out.println("[Thread: " + index + " ] " +msg);
+        //System.out.println("[Thread: " + index + " ] " +msg);
     }
 }

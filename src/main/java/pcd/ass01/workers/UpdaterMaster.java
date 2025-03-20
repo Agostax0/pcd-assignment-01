@@ -4,35 +4,36 @@ import pcd.ass01.BoidsModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
 public class UpdaterMaster {
 
 
-    private final Semaphore readSemaphore;
-    private final Semaphore writeSemaphore;
-    private final Semaphore updateSemaphore;
+    private final CyclicBarrier readBarrier;
+    private final CyclicBarrier writeBarrier;
+    private final CyclicBarrier updateBarrier;
+
+    private final Semaphore blockingWorkersSemaphore;
+
     private final int availableProcessors = Runtime.getRuntime().availableProcessors();
 
     private final List<Worker> workers = new ArrayList<>();
 
     public UpdaterMaster(){
 
-        //this.readBarrier = new CyclicBarrier(availableProcessors);
-        this.readSemaphore = new Semaphore(availableProcessors, true);
+        this.readBarrier = new CyclicBarrier(availableProcessors);
 
-        //this.writeBarrier = new CyclicBarrier(availableProcessors);
-        this.writeSemaphore = new Semaphore(availableProcessors, true);
+        this.writeBarrier = new CyclicBarrier(availableProcessors);
 
-        //this.updateBarrier = new CyclicBarrier(availableProcessors);
-        this.updateSemaphore = new Semaphore(availableProcessors, true);
+        this.updateBarrier = new CyclicBarrier(availableProcessors);
 
-        blockSemaphore(this.readSemaphore);
-        blockSemaphore(this.writeSemaphore);
-        blockSemaphore(this.updateSemaphore);
+        this.blockingWorkersSemaphore = new Semaphore(availableProcessors, false);
+
+        blockSemaphore(this.blockingWorkersSemaphore);
 
         for (int index = 0; index < availableProcessors; index ++){
-            Worker worker = new Worker(index, readSemaphore, writeSemaphore, updateSemaphore);
+            Worker worker = new Worker(index, readBarrier, writeBarrier, updateBarrier, this.blockingWorkersSemaphore);
             workers.add(worker);
             worker.start();
         }
@@ -42,22 +43,11 @@ public class UpdaterMaster {
     public void update(BoidsModel model){
         this.workers.forEach(it -> it.setModel(model));
 
-        log("start read");
-        this.readSemaphore.release(availableProcessors);
-        blockSemaphore(this.readSemaphore);
-        log("end read");
+        releaseAllWorkers();
+    }
 
-
-        log("start write");
-        this.writeSemaphore.release(availableProcessors);
-        blockSemaphore(this.writeSemaphore);
-        log("end write");
-
-        log("start update");
-        this.updateSemaphore.release(availableProcessors);
-        blockSemaphore(this.updateSemaphore);
-        log("end update");
-
+    private void releaseAllWorkers() {
+        this.blockingWorkersSemaphore.release(availableProcessors);
     }
 
     private void blockSemaphore(Semaphore semaphore){

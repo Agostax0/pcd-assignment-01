@@ -1,12 +1,8 @@
 package pcd.ass01;
 
-import pcd.ass01.workers.PositionUpdateMaster;
 import pcd.ass01.workers.UpdaterMaster;
-import pcd.ass01.workers.VelocityUpdaterMaster;
 
-import javax.swing.text.Position;
 import java.util.Optional;
-import java.util.concurrent.Semaphore;
 
 public class BoidsSimulator {
 
@@ -16,16 +12,11 @@ public class BoidsSimulator {
     private static final int FRAMERATE = 25;
     private int framerate;
 
-    private final VelocityUpdaterMaster velocityUpdaterMaster;
-    private final PositionUpdateMaster positionUpdateMaster;
     private final UpdaterMaster updaterMaster;
 
     public BoidsSimulator(BoidsModel model) {
         this.model = model;
         view = Optional.empty();
-
-        velocityUpdaterMaster = new VelocityUpdaterMaster();
-        positionUpdateMaster = new PositionUpdateMaster();
         updaterMaster = new UpdaterMaster();
     }
 
@@ -39,15 +30,16 @@ public class BoidsSimulator {
 
             updaterMaster.update(model);
 
-            var t1 = System.currentTimeMillis();
-            var dtElapsed = t1 - t0;
 
-            //System.out.println("dtElapsed: " + dtElapsed);
 
             if (view.isPresent()) {
                 view.get().update(framerate);
                 var framratePeriod = 1000/FRAMERATE;
 
+                var t1 = System.currentTimeMillis();
+                var dtElapsed = t1 - t0;
+
+                System.out.println("dtElapsed: " + dtElapsed);
 
                 if (dtElapsed < framratePeriod) {		
                 	try {

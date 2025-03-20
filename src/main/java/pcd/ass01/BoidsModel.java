@@ -48,7 +48,7 @@ public class BoidsModel {
 
     public synchronized void setBoidsNumber(int value){initBoids(value);}
     
-    public List<Boid> getBoids(){
+    public synchronized List<Boid> getBoids(){
     	return boids;
     }
     
