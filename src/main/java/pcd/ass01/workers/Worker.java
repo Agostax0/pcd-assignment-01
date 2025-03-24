@@ -48,6 +48,8 @@ public class Worker extends Thread{
 
             update();
 
+            releaseEnd();
+
         }
     }
 
@@ -71,7 +73,7 @@ public class Worker extends Thread{
         try {
             this.writeBarrier.await();
             log("started write");
-            for (Boid boid : myBoids) {boid.updateVelocity(this.model);}
+            for (Boid boid : myBoids) boid.updateVelocity(this.model);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (BrokenBarrierException e) {
@@ -102,6 +104,10 @@ public class Worker extends Thread{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void releaseEnd() {
+        this.isWorkerBlockedSemaphore.release();
     }
 
     private synchronized void log(String msg){

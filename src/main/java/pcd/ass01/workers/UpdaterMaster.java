@@ -28,9 +28,9 @@ public class UpdaterMaster {
 
         this.updateBarrier = new CyclicBarrier(availableProcessors);
 
-        this.blockingWorkersSemaphore = new Semaphore(availableProcessors, false);
+        this.blockingWorkersSemaphore = new Semaphore(availableProcessors, true);
 
-        blockSemaphore(this.blockingWorkersSemaphore);
+        blockAllWorkers();
 
         for (int index = 0; index < availableProcessors; index ++){
             Worker worker = new Worker(index, readBarrier, writeBarrier, updateBarrier, this.blockingWorkersSemaphore);
@@ -41,21 +41,29 @@ public class UpdaterMaster {
     }
 
     public void update(BoidsModel model){
+
+
         this.workers.forEach(it -> it.setModel(model));
 
         releaseAllWorkers();
+
+        blockAllWorkers();
+    }
+
+    private void blockAllWorkers() {
+        try {
+            this.blockingWorkersSemaphore.acquire(availableProcessors);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            log("BLOCKED");
+        }
     }
 
     private void releaseAllWorkers() {
         this.blockingWorkersSemaphore.release(availableProcessors);
-    }
-
-    private void blockSemaphore(Semaphore semaphore){
-        try {
-            semaphore.acquire(availableProcessors);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        log("RELEASED");
     }
 
     private synchronized void log(String msg){

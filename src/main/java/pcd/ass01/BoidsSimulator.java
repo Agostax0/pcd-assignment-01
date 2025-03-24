@@ -9,7 +9,7 @@ public class BoidsSimulator {
     private BoidsModel model;
     private Optional<BoidsView> view;
     
-    private static final int FRAMERATE = 25;
+    private static final int FRAMERATE = 60;
     private int framerate;
 
     private final UpdaterMaster updaterMaster;
