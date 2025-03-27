@@ -3,9 +3,10 @@ package pcd.ass01.workers;
 import pcd.ass01.Boid;
 import pcd.ass01.BoidsModel;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
-public class ComputeBoidSimulationTask implements Callable<Void> {
+public class ComputeBoidSimulationTask implements Callable<Object> {
 
     private final Boid boid;
     private final BoidsModel model;
@@ -15,7 +16,7 @@ public class ComputeBoidSimulationTask implements Callable<Void> {
         this.model = model;
     }
     @Override
-    public Void call() {
+    public Object call() {
         this.boid.readNearbyBoids(this.model);
 
         this.boid.updateVelocity(this.model);
