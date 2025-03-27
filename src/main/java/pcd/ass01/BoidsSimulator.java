@@ -1,8 +1,7 @@
 package pcd.ass01;
 
-import pcd.ass01.workers.UpdaterMaster;
-
 import java.util.Optional;
+import pcd.ass01.workers.UpdaterService;
 
 public class BoidsSimulator {
 
@@ -12,12 +11,12 @@ public class BoidsSimulator {
     private static final int FRAMERATE = 25;
     private int framerate;
 
-    private final UpdaterMaster updaterMaster;
+    private final UpdaterService updaterService;
 
     public BoidsSimulator(BoidsModel model) {
         this.model = model;
         view = Optional.empty();
-        updaterMaster = new UpdaterMaster();
+        updaterService = new UpdaterService();
     }
 
     public void attachView(BoidsView view) {
@@ -28,9 +27,7 @@ public class BoidsSimulator {
     	while (true) {
             var t0 = System.currentTimeMillis();
 
-            updaterMaster.update(model);
-
-
+            updaterService.compute(model);
 
             if (view.isPresent()) {
                 view.get().update(framerate);
