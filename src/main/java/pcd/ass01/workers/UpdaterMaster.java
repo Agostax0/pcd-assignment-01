@@ -41,6 +41,19 @@ public class UpdaterMaster {
     }
 
     public void update(BoidsModel model){
+
+
+        //TODO
+        /**
+         * The idea is:
+         * Main provides a task of distributing
+         * #boids tasks each for updating said boid
+         * tasks will be:
+         *  -getting nearby boids for said boid
+         *  -updating the speed of said boid
+         *  -updating the position of said boid
+         */
+
         this.workers.forEach(it -> it.setModel(model));
 
         releaseAllWorkers();
