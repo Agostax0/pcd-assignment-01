@@ -32,7 +32,9 @@ public class BoidsView implements ChangeListener {
 		cp.add(BorderLayout.CENTER, boidsPanel);
 
         JPanel slidersPanel = new JPanel();
-        
+
+		slidersPanel.setLayout(new GridLayout(2,2));
+
         cohesionSlider = makeSlider();
         separationSlider = makeSlider();
         alignmentSlider = makeSlider();
@@ -48,6 +50,16 @@ public class BoidsView implements ChangeListener {
 		slidersPanel.add(boidSlider);
 		        
 		cp.add(BorderLayout.SOUTH, slidersPanel);
+
+
+
+		JButton toggleSimulation = new JButton("Play");
+		toggleSimulation.addActionListener((e) -> {
+			model.toggleSimulationPause();
+			toggleSimulation.setText(model.isModelPaused() ? "Resume" : "Play");
+		} );
+
+		cp.add(BorderLayout.NORTH, toggleSimulation);
 
 		frame.setContentPane(cp);	
 		

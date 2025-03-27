@@ -26,31 +26,34 @@ public class BoidsSimulator {
       
     public void runSimulation() {
     	while (true) {
-            var t0 = System.currentTimeMillis();
 
-            updaterMaster.update(model);
+            if(!model.isModelPaused()){
+
+                var t0 = System.currentTimeMillis();
+
+                updaterMaster.update(model);
 
 
 
-            if (view.isPresent()) {
-                view.get().update(framerate);
-                var framratePeriod = 1000/FRAMERATE;
+                if (view.isPresent()) {
+                    view.get().update(framerate);
+                    var framratePeriod = 1000/FRAMERATE;
 
-                var t1 = System.currentTimeMillis();
-                var dtElapsed = t1 - t0;
+                    var t1 = System.currentTimeMillis();
+                    var dtElapsed = t1 - t0;
 
-                System.out.println("dtElapsed: " + dtElapsed);
+                    System.out.println("dtElapsed: " + dtElapsed);
 
-                if (dtElapsed < framratePeriod) {		
-                	try {
-                		Thread.sleep(framratePeriod - dtElapsed);
-                	} catch (Exception ex) {}
-                	framerate = FRAMERATE;
-                } else {
-                	framerate = (int) (1000/dtElapsed);
+                    if (dtElapsed < framratePeriod) {
+                        try {
+                            Thread.sleep(framratePeriod - dtElapsed);
+                        } catch (Exception ex) {}
+                        framerate = FRAMERATE;
+                    } else {
+                        framerate = (int) (1000/dtElapsed);
+                    }
                 }
-    		}
-            
+            }
     	}
     }
 
