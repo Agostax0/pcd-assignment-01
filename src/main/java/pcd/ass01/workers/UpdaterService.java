@@ -1,6 +1,5 @@
 package pcd.ass01.workers;
 
-import pcd.ass01.Boid;
 import pcd.ass01.BoidsModel;
 
 import java.util.LinkedList;
@@ -19,18 +18,41 @@ public class UpdaterService {
     public void compute(final BoidsModel model) {
         this.numTasks = model.getBoids().size();
 
-        List<Callable<Object>> results = new LinkedList<>();
+        List<Future<Void>> reads = new LinkedList<>();
 
         for (int taskIndex = 0; taskIndex < this.numTasks; taskIndex++) {
             var boid = model.getBoids().get(taskIndex);
-            Callable<Object> res = new ComputeBoidSimulationTask(boid, model);
-            results.add(res);
+            Future<Void> res = executor.submit(new ReadTask(boid, model));
+            reads.add(res);
         }
 
-        try {
-            executor.invokeAll(results);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        reads.forEach(it -> {
+            try {
+                it.get();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        List<Future<Void>> writes = new LinkedList<>();
+
+
+        for (int taskIndex = 0; taskIndex < this.numTasks; taskIndex++) {
+            var boid = model.getBoids().get(taskIndex);
+            Future<Void> res = executor.submit(new WriteTask(boid, model));
+            writes.add(res);
         }
+
+        writes.forEach(it -> {
+            try {
+                it.get();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
