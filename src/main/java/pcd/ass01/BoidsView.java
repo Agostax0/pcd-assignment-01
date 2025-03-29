@@ -31,25 +31,36 @@ public class BoidsView implements ChangeListener {
         boidsPanel = new BoidsPanel(this, model);
 		cp.add(BorderLayout.CENTER, boidsPanel);
 
-        JPanel slidersPanel = new JPanel();
-        
-        cohesionSlider = makeSlider();
-        separationSlider = makeSlider();
-        alignmentSlider = makeSlider();
+		JPanel slidersPanel = new JPanel();
+
+		slidersPanel.setLayout(new GridLayout(2,2));
+
+		cohesionSlider = makeSlider();
+		separationSlider = makeSlider();
+		alignmentSlider = makeSlider();
 		boidSlider = makeBoidSlider();
-        
-        slidersPanel.add(new JLabel("Separation"));
-        slidersPanel.add(separationSlider);
-        slidersPanel.add(new JLabel("Alignment"));
-        slidersPanel.add(alignmentSlider);
-        slidersPanel.add(new JLabel("Cohesion"));
-        slidersPanel.add(cohesionSlider);
+
+		slidersPanel.add(new JLabel("Separation"));
+		slidersPanel.add(separationSlider);
+		slidersPanel.add(new JLabel("Alignment"));
+		slidersPanel.add(alignmentSlider);
+		slidersPanel.add(new JLabel("Cohesion"));
+		slidersPanel.add(cohesionSlider);
 		slidersPanel.add(new JLabel("Boids"));
 		slidersPanel.add(boidSlider);
-		        
+
 		cp.add(BorderLayout.SOUTH, slidersPanel);
 
-		frame.setContentPane(cp);	
+
+		JButton toggleSimulation = new JButton("Resume");
+		toggleSimulation.addActionListener((e) -> {
+			model.toggleSimulationPause();
+			toggleSimulation.setText(model.isModelPaused() ? "Resume" : "Play");
+		} );
+
+		cp.add(BorderLayout.NORTH, toggleSimulation);
+
+		frame.setContentPane(cp);
 		
         frame.setVisible(true);
 	}
