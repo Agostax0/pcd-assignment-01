@@ -10,14 +10,12 @@ import java.util.concurrent.Semaphore;
 
 public class UpdaterMaster {
 
-    private final List<Thread> workers = new ArrayList<>();
-
     public UpdaterMaster() {
 
     }
 
     public void update(BoidsModel model) {
-        workers.clear();
+        var readers = new ArrayList<Thread>();
 
         for(int i = 0; i < model.getBoids().size(); i++){
             var boid = model.getBoids().get(i);
@@ -26,10 +24,10 @@ public class UpdaterMaster {
             });
             worker.start();
 
-            workers.add(worker);
+            readers.add(worker);
         }
 
-        workers.forEach(it -> {
+        readers.forEach(it -> {
             try {
                 it.join();
             } catch (InterruptedException e) {
@@ -37,7 +35,7 @@ public class UpdaterMaster {
             }
         });
 
-        workers.clear();
+        var writers = new ArrayList<Thread>();
 
         for(int i = 0; i < model.getBoids().size(); i++){
             var boid = model.getBoids().get(i);
@@ -47,11 +45,11 @@ public class UpdaterMaster {
             });
             worker.start();
 
-            workers.add(worker);
+            writers.add(worker);
         }
 
 
-        workers.forEach(it -> {
+        writers.forEach(it -> {
             try {
                 it.join();
             } catch (InterruptedException e) {
