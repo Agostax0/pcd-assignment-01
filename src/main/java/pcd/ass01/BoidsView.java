@@ -53,7 +53,7 @@ public class BoidsView implements ChangeListener {
 
 
 
-		JButton toggleSimulation = new JButton("Play");
+		JButton toggleSimulation = new JButton("Resume");
 		toggleSimulation.addActionListener((e) -> {
 			model.toggleSimulationPause();
 			toggleSimulation.setText(model.isModelPaused() ? "Resume" : "Play");
