@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoidsModel {
+
+    private final boolean jpf = true;
     
     private List<Boid> boids;
     private double separationWeight; 
@@ -41,9 +43,18 @@ public class BoidsModel {
     private void initBoids(int number){
         boids = new ArrayList<>();
         for (int i = 0; i < number; i++) {
-            P2d pos = new P2d(-width/2 + Math.random() * width, -height/2 + Math.random() * height);
-            V2d vel = new V2d(Math.random() * maxSpeed/2 - maxSpeed/4, Math.random() * maxSpeed/2 - maxSpeed/4);
+            P2d pos;
+            V2d vel;
+            if(jpf){
+                double fakeRandom = (double) (i % 100) / 100;
+                pos = new P2d(-width/2 + fakeRandom/2 * width, -height/2 + fakeRandom/3 * height);
+                vel = new V2d(fakeRandom/4 * maxSpeed/2 - maxSpeed/4, fakeRandom/5 * maxSpeed/2 - maxSpeed/4);
+            }else{
+                pos = new P2d(-width/2 + Math.random() * width, -height/2 + Math.random() * height);
+                vel = new V2d(Math.random() * maxSpeed/2 - maxSpeed/4, Math.random() * maxSpeed/2 - maxSpeed/4);
+            }
             boids.add(new Boid(pos, vel));
+
         }
     }
 
