@@ -21,7 +21,7 @@ public class BoidsSimulator {
     }
 
     public void attachView(BoidsView view) {
-    	this.view = Optional.of(view);
+    	this.view = !(this.model.jpf) ? Optional.of(view) : Optional.empty();
     }
       
     public void runSimulation() {

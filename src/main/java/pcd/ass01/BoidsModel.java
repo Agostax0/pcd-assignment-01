@@ -5,8 +5,8 @@ import java.util.List;
 
 public class BoidsModel {
 
-    private final boolean jpf = true;
-    
+    public final boolean jpf = false;
+
     private List<Boid> boids;
     private double separationWeight; 
     private double alignmentWeight; 
