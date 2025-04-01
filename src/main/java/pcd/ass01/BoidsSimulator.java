@@ -14,7 +14,7 @@ public class BoidsSimulator {
 
     public void runSimulation() {
         var iteration = 0;
-    	while (iteration++ < 1000) {
+    	while (iteration++ < 1500) {
     		var boids = model.getBoids();
     		for (Boid boid : boids) {
                 boid.updateVelocity(model);
