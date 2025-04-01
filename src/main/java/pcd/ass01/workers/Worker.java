@@ -12,18 +12,19 @@ public class Worker extends Thread {
     private final int index;
 
     private BoidsModel model;
-    private final int availableProcessors = Runtime.getRuntime().availableProcessors();
+    private final int availableProcessors;
     private List<Boid> myBoids = new ArrayList<>();
     private final MyCyclicBarrier startBarrier;
     private final MyCyclicBarrier endBarrier;
 
     private final MyCyclicBarrier readToWriteBarrier;
 
-    public Worker(final int index, final MyCyclicBarrier startBarrier, final MyCyclicBarrier endBarrier, final MyCyclicBarrier readToWriteBarrier) {
+    public Worker(final int index, final MyCyclicBarrier startBarrier, final MyCyclicBarrier endBarrier, final MyCyclicBarrier readToWriteBarrier, final int threadCount) {
         this.index = index;
         this.startBarrier = startBarrier;
         this.endBarrier = endBarrier;
         this.readToWriteBarrier = readToWriteBarrier;
+        this.availableProcessors = threadCount > 0 ? Math.min(threadCount, Runtime.getRuntime().availableProcessors()) : Runtime.getRuntime().availableProcessors();
     }
 
 

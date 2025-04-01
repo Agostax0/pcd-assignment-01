@@ -25,7 +25,7 @@ public class UpdaterMaster {
         var readToWriteBarrier = new MyCyclicBarrier(availableProcessors);
 
         for (int index = 0; index < availableProcessors; index++) {
-            Worker worker = new Worker(index, this.startBarrier, this.endBarrier, readToWriteBarrier);
+            Worker worker = new Worker(index, this.startBarrier, this.endBarrier, readToWriteBarrier, threadCount);
             workers.add(worker);
             worker.start();
         }
