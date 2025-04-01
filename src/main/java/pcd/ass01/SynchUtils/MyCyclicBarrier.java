@@ -21,7 +21,6 @@ public class MyCyclicBarrier {
         this.currentParties++;
 
         if(this.currentParties == this.parties){
-    //        if(this.name != null) log("barriera rotta");
             this.isBroken = true;
             //tutti hanno raggiunto la barriera
             notifyAll();
@@ -35,10 +34,4 @@ public class MyCyclicBarrier {
         }
     }
 
-    public synchronized int getCurrentParties(){return this.currentParties;}
-    public synchronized int getParties(){return this.parties;}
-    public synchronized String getQueuePosition(){return this.currentParties + "/" + this.parties;}
-    private synchronized void log(final String msg){
-        System.out.println(this.name + " " + msg);
-    }
 }

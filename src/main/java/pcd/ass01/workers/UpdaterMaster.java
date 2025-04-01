@@ -17,8 +17,7 @@ public class UpdaterMaster {
     private final MyCyclicBarrier endBarrier;
 
     public UpdaterMaster() {
-
-        this.startBarrier = new MyCyclicBarrier(availableProcessors + 1, "Start Barrier");
+        this.startBarrier = new MyCyclicBarrier(availableProcessors + 1);
         this.endBarrier = new MyCyclicBarrier(availableProcessors + 1);
 
         var readToWriteBarrier = new MyCyclicBarrier(availableProcessors);
@@ -31,9 +30,7 @@ public class UpdaterMaster {
     }
 
     public void update(BoidsModel model) {
-        log("li aggiorno");
         this.workers.forEach(it -> it.setModel(model));
-        log("segnalo di partire ai worker [" + this.startBarrier.getQueuePosition() + "]");
         try {
             this.startBarrier.await(); //quando il main esegue questo await gli altri thread partono
         } catch (InterruptedException e) {
@@ -41,14 +38,10 @@ public class UpdaterMaster {
         }
 
         try {
-            log("aspetto i worker " + this.endBarrier.getQueuePosition());
             this.endBarrier.await(); //quando gli altri thread finiscono libero il main
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private synchronized void log(String msg) {
-        //System.out.println("[Thread: main ] " + msg);
-    }
 }
