@@ -27,8 +27,8 @@ public class BoidsSimulation {
     					PERCEPTION_RADIUS,
     					AVOID_RADIUS); 
     	var sim = new BoidsSimulator(model);
-    	var view = new BoidsView(model, SCREEN_WIDTH, SCREEN_HEIGHT);
-    	sim.attachView(view);
     	sim.runSimulation();
+
+		System.exit(0);
     }
 }
