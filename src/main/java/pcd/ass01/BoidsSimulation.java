@@ -14,10 +14,6 @@ public class BoidsSimulation {
     static final double PERCEPTION_RADIUS = 50.0;
     static final double AVOID_RADIUS = 20.0;
 
-	final static int SCREEN_WIDTH = 700;
-	final static int SCREEN_HEIGHT = 700;
-	
-
     public static void main(String[] args) {      
     	var model = new BoidsModel(
     					N_BOIDS, 
@@ -27,8 +23,8 @@ public class BoidsSimulation {
     					PERCEPTION_RADIUS,
     					AVOID_RADIUS); 
     	var sim = new BoidsSimulator(model);
-    	var view = new BoidsView(model, SCREEN_WIDTH, SCREEN_HEIGHT);
-    	sim.attachView(view);
     	sim.runSimulation();
+
+		System.exit(0);
     }
 }
