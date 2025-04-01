@@ -2,8 +2,6 @@ package pcd.ass01;
 
 import pcd.ass01.workers.UpdaterMaster;
 
-import java.util.Optional;
-
 public class BoidsSimulator {
 
     private BoidsModel model;
@@ -12,10 +10,10 @@ public class BoidsSimulator {
 
     private long startTime;
 
-    public BoidsSimulator(BoidsModel model) {
+    public BoidsSimulator(BoidsModel model, int threadCount) {
         startTime = System.currentTimeMillis();
         this.model = model;
-        updaterMaster = new UpdaterMaster();
+        updaterMaster = new UpdaterMaster(threadCount);
     }
       
     public void runSimulation() {

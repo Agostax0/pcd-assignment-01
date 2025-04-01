@@ -5,18 +5,20 @@ import pcd.ass01.SynchUtils.MyCyclicBarrier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Semaphore;
 
 public class UpdaterMaster {
 
-    private final int availableProcessors = Runtime.getRuntime().availableProcessors();
+    private final int availableProcessors;
 
     private final List<Worker> workers = new ArrayList<>();
     private final MyCyclicBarrier startBarrier;
     private final MyCyclicBarrier endBarrier;
 
-    public UpdaterMaster() {
+    public UpdaterMaster(int threadCount) {
+        availableProcessors = (threadCount > 0)
+                ? Math.min(threadCount,Runtime.getRuntime().availableProcessors())
+                : Runtime.getRuntime().availableProcessors();
+
         this.startBarrier = new MyCyclicBarrier(availableProcessors + 1);
         this.endBarrier = new MyCyclicBarrier(availableProcessors + 1);
 
