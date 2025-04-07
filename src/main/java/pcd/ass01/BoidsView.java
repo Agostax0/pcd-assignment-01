@@ -52,14 +52,29 @@ public class BoidsView implements ChangeListener {
 		cp.add(BorderLayout.SOUTH, slidersPanel);
 
 
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new GridLayout(1,2));
 
 		JButton toggleSimulation = new JButton("Resume");
 		toggleSimulation.addActionListener((e) -> {
-			model.toggleSimulationPause();
+			model.setSimulationStatus(!model.isModelPaused());
 			toggleSimulation.setText(model.isModelPaused() ? "Resume" : "Play");
 		} );
 
 		cp.add(BorderLayout.NORTH, toggleSimulation);
+		buttonPanel.add(toggleSimulation);
+
+		JButton startStopSimulation = new JButton("Reset");
+		startStopSimulation.addActionListener((e) -> {
+			model.setSimulationStatus(true);
+			toggleSimulation.setText("Resume");
+			model.initBoids(model.getBoids().size());
+		} );
+
+		buttonPanel.add(startStopSimulation);
+
+
+		cp.add(BorderLayout.NORTH, buttonPanel);
 
 		frame.setContentPane(cp);	
 		
