@@ -5,7 +5,7 @@ import java.util.List;
 
 public class BoidsModel {
 
-    private final boolean jpf = true;
+    private final boolean jpf = false;
     
     private List<Boid> boids;
     private double separationWeight; 
@@ -40,7 +40,7 @@ public class BoidsModel {
 
     }
 
-    private void initBoids(int number){
+    public synchronized void initBoids(int number){
         boids = new ArrayList<>();
         for (int i = 0; i < number; i++) {
             P2d pos;
@@ -124,10 +124,9 @@ public class BoidsModel {
     	return perceptionRadius;
     }
 
-    public synchronized void toggleSimulationPause() {
-        this.isModelPaused = !this.isModelPaused;
+    public synchronized void setSimulationStatus(boolean status) {
+        this.isModelPaused = status;
     }
-
     public synchronized boolean isModelPaused() {
         return this.isModelPaused;
     }
