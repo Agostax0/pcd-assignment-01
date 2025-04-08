@@ -24,8 +24,8 @@ public class BoidsSimulator {
     }
       
     public void runSimulation() {
-        var t0 = System.currentTimeMillis();
         while (true) {
+            var t0 = System.currentTimeMillis();
 
             if(!model.isModelPaused()) {
 
@@ -33,7 +33,7 @@ public class BoidsSimulator {
 
             }
 
-            if (view.isPresent()) {
+            if (view.isPresent() && !model.isModelPaused()) {
                 view.get().update(framerate);
                 var framratePeriod = 1000 / FRAMERATE;
 
